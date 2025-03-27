@@ -1,80 +1,130 @@
 import { useState } from 'react';
-import { BuildingLibraryIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
-type DropdownKey = 'home' | 'calendar';
+type DropdownKey = 'projects' | 'budget' | 'financing' | 'utilization' | 'reports' | 'estimates' | 'contracts' | 'references';
+
+interface DropdownStates {
+  projects: boolean;
+  budget: boolean;
+  financing: boolean;
+  utilization: boolean;
+  reports: boolean;
+  estimates: boolean;
+  contracts: boolean;
+  references: boolean;
+}
 
 interface SidebarProps {
   sidebarToggle: boolean;
 }
 
 const Sidebar = ({ sidebarToggle }: SidebarProps) => {
-  const [dropdownStates, setDropdownStates] = useState({
-    home: false,
-    calendar: false
+  const [dropdownStates, setDropdownStates] = useState<DropdownStates>({
+    projects: false,
+    budget: false,
+    financing: false,
+    utilization: false,
+    reports: false,
+    estimates: false,
+    contracts: false,
+    references: false
   });
 
   const toggleDropdown = (key: DropdownKey) => {
-    setDropdownStates(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+    setDropdownStates(prev => {
+      // Create an object with all dropdowns set to false
+      const allClosed = Object.keys(prev).reduce<DropdownStates>((acc, curr) => ({
+        ...acc,
+        [curr as DropdownKey]: false
+      }), {} as DropdownStates);
+
+      // Toggle only the clicked dropdown
+      return {
+        ...allClosed,
+        [key]: !prev[key]
+      };
+    });
   };
+
+  const menuItems = [
+    {
+      key: 'projects' as DropdownKey,
+      label: 'Projects',
+      items: ['Active Projects', 'Completed Projects', 'Project Timeline', 'Project Analytics']
+    },
+    {
+      key: 'budget' as DropdownKey,
+      label: 'Budget',
+      items: ['Overview', 'Allocations', 'Expenses', 'Forecasting']
+    },
+    {
+      key: 'financing' as DropdownKey,
+      label: 'Financing',
+      items: ['Revenue', 'Investments', 'Cash Flow', 'Financial Reports']
+    },
+    {
+      key: 'utilization' as DropdownKey,
+      label: 'Utilization',
+      items: ['Resource Planning', 'Team Utilization', 'Capacity Planning', 'Efficiency Metrics']
+    },
+    {
+      key: 'reports' as DropdownKey,
+      label: 'Reports',
+      items: ['Performance Reports', 'Financial Reports', 'Resource Reports', 'Custom Reports']
+    },
+    {
+      key: 'estimates' as DropdownKey,
+      label: 'Estimates',
+      items: ['Create Estimate', 'Pending Estimates', 'Approved Estimates', 'Templates']
+    },
+    {
+      key: 'contracts' as DropdownKey,
+      label: 'Contracts',
+      items: ['Active Contracts', 'Contract Templates', 'Negotiations', 'Archive']
+    },
+    {
+      key: 'references' as DropdownKey,
+      label: 'References',
+      items: ['Client References', 'Case Studies', 'Testimonials', 'Portfolio']
+    }
+  ];
 
   return (
     <aside 
       className={`
-        flex flex-col h-screen bg-white border-r border-slate-200
+        mb-6 bg-white border border-slate-200 rounded-xl
         transition-all duration-300 ease-in-out
-        ${sidebarToggle ? 'w-64 max-md:w-0 max-md:opacity-0' : 'w-20 max-md:w-64'}
+        ${sidebarToggle ? 'w-64' : 'w-20'}
       `}
     >
-      {/* Logo */}
-      <div className='flex items-center h-16 px-6 border-b border-slate-200'>
-        <BuildingLibraryIcon className='size-8 text-indigo-600' />
-      </div>
-      
       {/* Menu */}
       <nav className='flex-1 px-4 py-4 overflow-y-auto'>
         <ul className='flex flex-col gap-2'>
-          {/* Home Dropdown */}
-          <li className='rounded-lg overflow-hidden'>
-            <button
-              onClick={() => toggleDropdown('home')}
-              className="flex items-center justify-between w-full px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-150"
-            >
-              <span className='font-medium'>Home</span>
-              <ChevronDownIcon 
-                className={`size-4 transition-transform duration-200 ${dropdownStates.home ? 'rotate-180' : ''}`}
-              />
-            </button>
-            <div className={`transition-all duration-200 ease-in-out ${dropdownStates.home ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
-              <ul className='px-3 py-2 space-y-1'>
-                <li className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'>Option 1</li>   
-                <li className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'>Option 2</li>
-                <li className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'>Option 3</li>
-              </ul>
-            </div>
-          </li>
-          
-          {/* Calendar Dropdown */}
-          <li className='rounded-lg overflow-hidden'>
-            <button
-              onClick={() => toggleDropdown('calendar')}
-              className="flex items-center justify-between w-full px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-150"
-            >
-              <span className='font-medium'>Calendar</span>
-              <ChevronDownIcon 
-                className={`size-4 transition-transform duration-200 ${dropdownStates.calendar ? 'rotate-180' : ''}`}
-              />
-            </button>
-            <div className={`transition-all duration-200 ease-in-out ${dropdownStates.calendar ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
-              <ul className='px-3 py-2 space-y-1'>
-                <li className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'>Today</li>
-                <li className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'>This Week</li>
-                <li className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'>This Month</li>
-              </ul>
-            </div>
-          </li>
+          {menuItems.map((menu) => (
+            <li key={menu.key} className='rounded-lg overflow-hidden'>
+              <button
+                onClick={() => toggleDropdown(menu.key)}
+                className="flex items-center justify-between w-full px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-150"
+              >
+                <span className='font-medium'>{menu.label}</span>
+                <ChevronDownIcon 
+                  className={`size-4 transition-transform duration-200 ${dropdownStates[menu.key] ? 'rotate-180' : ''}`}
+                />
+              </button>
+              <div className={`transition-all duration-200 ease-in-out ${dropdownStates[menu.key] ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                <ul className='px-3 py-2 space-y-1'>
+                  {menu.items.map((item, index) => (
+                    <li 
+                      key={index}
+                      className='px-3 py-1 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded cursor-pointer transition-colors duration-150'
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          ))}
         </ul>
       </nav>
     </aside>

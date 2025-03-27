@@ -149,6 +149,9 @@ const Home = () => {
       },
       sparkline: {
         enabled: false
+      },
+      zoom: {
+        enabled: false
       }
     },
     dataLabels: {
@@ -313,8 +316,6 @@ const Home = () => {
 
   return (
     <div className='p-6'>
-      <h1 className='text-2xl font-semibold text-slate-900 mb-4'>Dashboard</h1>
-      
       <div className='grid grid-cols-12 gap-4'>
         {/* Left Column */}
         <div className='col-span-12 md:col-span-8 space-y-4'>

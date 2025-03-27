@@ -9,11 +9,17 @@ function App() {
 
   return (
     <Router>
-      <div className="flex h-screen overflow-hidden bg-gray-50">
-        <Sidebar sidebarToggle={sidebarToggle} />
-        <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-          <Header sidebarToggle={sidebarToggle} setSidebarToggle={setSidebarToggle} />
-          <main>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <Header sidebarToggle={sidebarToggle} setSidebarToggle={setSidebarToggle} />
+        
+        {/* Content wrapper */}
+        <div className="flex">
+          {/* Sidebar */}
+          <Sidebar sidebarToggle={sidebarToggle} />
+          
+          {/* Main content */}
+          <main className={`flex-1 transition-all duration-300`}>
             <Routes>
               <Route path="/" element={<Home />} />
             </Routes>
