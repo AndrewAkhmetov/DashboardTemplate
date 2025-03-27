@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { 
   Bars3CenterLeftIcon, 
+  XMarkIcon,
   BellIcon, 
   ChevronDownIcon,
   UserCircleIcon,
@@ -12,6 +13,8 @@ interface HeaderProps {
   setSidebarToggle: (value: boolean) => void;
 }
 
+const MOBILE_BREAKPOINT = 720;
+
 const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
   const [dropdownStates, setDropdownStates] = useState({
     products: false,
@@ -22,6 +25,25 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
   const profileRef = useRef<HTMLDivElement>(null);
   const productsRef = useRef<HTMLLIElement>(null);
   const resourcesRef = useRef<HTMLLIElement>(null);
+
+  // Set initial sidebar state based on screen width
+  useEffect(() => {
+    const handleResize = () => {
+      const shouldBeOpen = window.innerWidth > MOBILE_BREAKPOINT;
+      setSidebarToggle(shouldBeOpen);
+    };
+
+    // Set initial state
+    handleResize();
+
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [setSidebarToggle]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,10 +86,21 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
 
       {/* Sidebar Toggle Button */}
       <button 
-        className='p-1.5 rounded-lg hover:bg-slate-100 transition-colors duration-150'
+        className={`
+          p-1.5 ml-5 rounded-lg transition-all duration-150 cursor-pointer
+          ${sidebarToggle 
+            ? 'bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300' 
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 active:bg-slate-200'
+          }
+          active:scale-95
+        `}
         onClick={() => setSidebarToggle(!sidebarToggle)}
       >
-        <Bars3CenterLeftIcon className='size-6 text-slate-600' />
+        {sidebarToggle ? (
+          <XMarkIcon className='size-6' />
+        ) : (
+          <Bars3CenterLeftIcon className='size-6' />
+        )}
       </button>
 
       {/* Navigation */}
@@ -93,7 +126,7 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
           <li className='relative' ref={productsRef}>
             <button
               onClick={() => toggleDropdown('products')}
-              className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'
+              className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150 cursor-pointer'
             >
               Products
               <ChevronDownIcon className={`size-4 transition-transform duration-200 ${dropdownStates.products ? 'rotate-180' : ''}`} />
@@ -111,7 +144,7 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
           <li className='relative' ref={resourcesRef}>
             <button
               onClick={() => toggleDropdown('resources')}
-              className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'
+              className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150 cursor-pointer'
             >
               Resources
               <ChevronDownIcon className={`size-4 transition-transform duration-200 ${dropdownStates.resources ? 'rotate-180' : ''}`} />
@@ -130,7 +163,7 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
       {/* Right Section */}
       <div className='flex items-center gap-4'>
         {/* Notification Button */}
-        <button className='p-2 rounded-lg hover:bg-slate-100 transition-colors duration-150 relative'>
+        <button className='p-2 rounded-lg hover:bg-slate-100 transition-colors duration-150 relative cursor-pointer active:opacity-70'>
           <BellIcon className='size-6 text-slate-600' />
           <span className='absolute top-1 right-1 size-2 bg-red-500 rounded-full'></span>
         </button>
@@ -139,7 +172,7 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
         <div className='relative' ref={profileRef}>
           <button 
             onClick={() => setShowProfileModal(!showProfileModal)}
-            className='p-2 rounded-lg hover:bg-slate-100 transition-colors duration-150'
+            className='p-2 rounded-lg hover:bg-slate-100 transition-colors duration-150 cursor-pointer active:opacity-70'
           >
             <UserCircleIcon className='size-6 text-slate-600' />
           </button>

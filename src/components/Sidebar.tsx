@@ -115,7 +115,7 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
       className={`
         mb-6 bg-white border border-slate-200 rounded-xl
         transition-all duration-300 ease-in-out
-        ${sidebarToggle ? 'w-64' : 'w-20'}
+        ${sidebarToggle ? 'w-64 opacity-100' : 'w-0 opacity-0 hidden'}
       `}
     >
       {/* Menu */}
@@ -127,7 +127,7 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
                 onClick={() => toggleDropdown(menu.key)}
                 className={`
                   flex items-center justify-between w-full px-3 py-2 
-                  rounded-lg transition-colors duration-150
+                  rounded-lg transition-colors duration-150 cursor-pointer
                   ${activeDropdown === menu.key 
                     ? 'text-slate-900 bg-slate-100' 
                     : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
