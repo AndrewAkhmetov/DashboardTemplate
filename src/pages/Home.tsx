@@ -135,22 +135,25 @@ const Home = () => {
       onItemClick: {
         toggleDataSeries: false
       },
-      formatter: function(legendName: string, opts?: any) {
-        return `${legendName} - ${opts?.w.globals.series[opts?.seriesIndex]}%`;
+      formatter: function(legendName: string) {
+        return `${legendName}`;
       },
       floating: false,
-      offsetY: 0
+      offsetY: -80
     },
     responsive: [{
       breakpoint: 480,
       options: {
+        chart: {
+          height: 600
+        },
         legend: {
-          fontSize: '11px',
+          fontSize: '12px',
           position: 'bottom',
           offsetY: 0,
           itemMargin: {
             horizontal: 8,
-            vertical: 5
+            vertical: 8
           },
           markers: {
             size: 6
@@ -414,13 +417,13 @@ const Home = () => {
         <div className='col-span-12 md:col-span-4'>
           <div className='h-full bg-white rounded-xl shadow-sm border border-slate-200 p-4'>
             <h2 className="text-lg font-semibold text-slate-900 mb-3">Expense Distribution</h2>
-            <div className='flex flex-col items-center justify-center min-h-[450px] pb-10'>
+            <div className='flex flex-col items-center justify-center min-h-[600px] md:min-h-[450px] pb-16 md:pb-8'>
               <div className='w-full max-w-[300px]'>
                 <ReactApexChart
                   options={donutChartOptions}
                   series={donutChartSeries}
                   type="donut"
-                  height={500}
+                  height={550}
                 />
               </div>
             </div>
