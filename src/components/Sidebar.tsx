@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   ChevronDownIcon,
   ClipboardDocumentListIcon,
@@ -8,7 +8,11 @@ import {
   ChartBarIcon,
   CalculatorIcon,
   DocumentTextIcon,
-  BookmarkIcon
+  BookmarkIcon,
+  HomeIcon,
+  ChartPieIcon,
+  DocumentChartBarIcon,
+  CubeIcon
 } from '@heroicons/react/24/outline';
 
 type DropdownKey = 'projects' | 'budget' | 'financing' | 'utilization' | 'reports' | 'estimates' | 'contracts' | 'references';
@@ -28,7 +32,26 @@ interface SidebarProps {
   sidebarToggle: boolean;
 }
 
+const BREAKPOINTS = {
+  resources: 920,
+  products: 820,
+  reports: 720,
+  analytics: 620,
+  home: 520,
+};
+
 const Sidebar = ({ sidebarToggle }: SidebarProps) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const [dropdownStates, setDropdownStates] = useState<DropdownStates>({
     projects: false,
     budget: false,
@@ -110,6 +133,41 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
     }
   ];
 
+  const headerItems = [
+    {
+      key: 'home',
+      label: 'Home',
+      icon: HomeIcon,
+      breakpoint: BREAKPOINTS.home,
+    },
+    {
+      key: 'analytics',
+      label: 'Analytics',
+      icon: ChartPieIcon,
+      breakpoint: BREAKPOINTS.analytics,
+    },
+    {
+      key: 'reports',
+      label: 'Reports',
+      icon: DocumentChartBarIcon,
+      breakpoint: BREAKPOINTS.reports,
+    },
+    {
+      key: 'products',
+      label: 'Products',
+      icon: CubeIcon,
+      breakpoint: BREAKPOINTS.products,
+      items: ['Product 1', 'Product 2', 'Product 3']
+    },
+    {
+      key: 'resources',
+      label: 'Resources',
+      icon: BookmarkIcon,
+      breakpoint: BREAKPOINTS.resources,
+      items: ['Documentation', 'Support', 'Community']
+    }
+  ];
+
   return (
     <aside 
       className={`
@@ -120,6 +178,78 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
     >
       {/* Menu */}
       <nav className='flex-1 px-4 py-4 overflow-y-auto'>
+        {/* Header Items */}
+        <ul className='flex flex-col gap-2 mb-4'>
+          {headerItems.map((item) => (
+            windowWidth <= item.breakpoint && (
+              <li key={item.key} className='rounded-lg overflow-hidden'>
+                {item.items ? (
+                  // Dropdown items (Products & Resources)
+                  <>
+                    <button
+                      onClick={() => toggleDropdown(item.key as DropdownKey)}
+                      className={`
+                        flex items-center justify-between w-full px-3 py-2 
+                        rounded-lg transition-colors duration-150 cursor-pointer
+                        ${activeDropdown === item.key 
+                          ? 'text-slate-900 bg-slate-100' 
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                        }
+                      `}
+                    >
+                      <span className="flex items-center gap-2">
+                        <item.icon className={`size-5 ${activeDropdown === item.key ? 'text-blue-600' : ''}`} />
+                        <span className='font-medium'>{item.label}</span>
+                      </span>
+                      <ChevronDownIcon 
+                        className={`size-4 transition-transform duration-200 
+                          ${dropdownStates[item.key as DropdownKey] ? 'rotate-180' : ''}
+                          ${activeDropdown === item.key ? 'text-blue-600' : ''}
+                        `}
+                      />
+                    </button>
+                    <div className={`transition-all duration-200 ease-in-out ${dropdownStates[item.key as DropdownKey] ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                      <ul className='px-3 py-2 space-y-1'>
+                        {item.items.map((subItem, index) => (
+                          <li 
+                            key={index}
+                            className={`
+                              px-3 py-1 text-sm rounded cursor-pointer transition-colors duration-150
+                              ${activeDropdown === item.key 
+                                ? 'text-slate-900 hover:bg-slate-100' 
+                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                              }
+                            `}
+                          >
+                            {subItem}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  // Regular items (Home, Analytics, Reports)
+                  <a
+                    href="#"
+                    className={`
+                      flex items-center gap-2 px-3 py-2 
+                      rounded-lg transition-colors duration-150
+                      text-slate-600 hover:text-slate-900 hover:bg-slate-50
+                    `}
+                  >
+                    <item.icon className="size-5" />
+                    <span className='font-medium'>{item.label}</span>
+                  </a>
+                )}
+              </li>
+            )
+          ))}
+        </ul>
+
+        {/* Divider */}
+        <div className="h-px bg-slate-200 mb-4" />
+
+        {/* Original Menu Items */}
         <ul className='flex flex-col gap-2'>
           {menuItems.map((menu) => (
             <li key={menu.key} className='rounded-lg overflow-hidden'>

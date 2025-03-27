@@ -101,6 +101,13 @@ const Home = () => {
   const donutChartOptions: ApexOptions = {
     chart: {
       type: 'donut',
+      redrawOnWindowResize: true,
+      redrawOnParentResize: true,
+      animations: {
+        dynamicAnimation: {
+          enabled: true
+        }
+      }
     },
     labels: ['Operating Expenses', 'Marketing', 'Sales', 'Development'],
     colors: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'],
@@ -108,20 +115,49 @@ const Home = () => {
       pie: {
         donut: {
           size: '75%'
-        }
+        },
+        offsetY: 0
       }
     },
     legend: {
+      show: true,
       position: 'bottom',
+      horizontalAlign: 'center',
       fontSize: '13px',
       markers: {
-        size: 6
+        strokeWidth: 0,
+        size: 8
       },
       itemMargin: {
-        horizontal: 8,
-        vertical: 4
-      }
+        horizontal: 10,
+        vertical: 6
+      },
+      onItemClick: {
+        toggleDataSeries: false
+      },
+      formatter: function(legendName: string, opts?: any) {
+        return `${legendName} - ${opts?.w.globals.series[opts?.seriesIndex]}%`;
+      },
+      floating: false,
+      offsetY: 0
     },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        legend: {
+          fontSize: '11px',
+          position: 'bottom',
+          offsetY: 0,
+          itemMargin: {
+            horizontal: 8,
+            vertical: 5
+          },
+          markers: {
+            size: 6
+          }
+        }
+      }
+    }],
     dataLabels: {
       enabled: false
     },
@@ -378,19 +414,15 @@ const Home = () => {
         <div className='col-span-12 md:col-span-4'>
           <div className='h-full bg-white rounded-xl shadow-sm border border-slate-200 p-4'>
             <h2 className="text-lg font-semibold text-slate-900 mb-3">Expense Distribution</h2>
-            <div className='flex items-center justify-center h-[calc(100%-2rem)]'>
-              <ReactApexChart
-                options={{
-                  ...donutChartOptions,
-                  chart: {
-                    ...donutChartOptions.chart,
-                    height: '100%'
-                  }
-                }}
-                series={donutChartSeries}
-                type="donut"
-                height={400}
-              />
+            <div className='flex flex-col items-center justify-center min-h-[450px] pb-10'>
+              <div className='w-full max-w-[300px]'>
+                <ReactApexChart
+                  options={donutChartOptions}
+                  series={donutChartSeries}
+                  type="donut"
+                  height={500}
+                />
+              </div>
             </div>
           </div>
         </div>

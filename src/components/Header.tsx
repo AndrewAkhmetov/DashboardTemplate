@@ -13,9 +13,18 @@ interface HeaderProps {
   setSidebarToggle: (value: boolean) => void;
 }
 
+const BREAKPOINTS = {
+  resources: 920,
+  products: 820,
+  reports: 720,
+  analytics: 620,
+  home: 520,
+};
+
 const MOBILE_BREAKPOINT = 720;
 
 const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [dropdownStates, setDropdownStates] = useState({
     products: false,
     resources: false
@@ -26,23 +35,19 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
   const productsRef = useRef<HTMLLIElement>(null);
   const resourcesRef = useRef<HTMLLIElement>(null);
 
-  // Set initial sidebar state based on screen width
+  // Add window resize listener and handle initial sidebar state
   useEffect(() => {
     const handleResize = () => {
-      const shouldBeOpen = window.innerWidth > MOBILE_BREAKPOINT;
-      setSidebarToggle(shouldBeOpen);
+      const width = window.innerWidth;
+      setWindowWidth(width);
+      setSidebarToggle(width > MOBILE_BREAKPOINT);
     };
 
     // Set initial state
     handleResize();
 
-    // Add resize listener
     window.addEventListener('resize', handleResize);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, [setSidebarToggle]);
 
   useEffect(() => {
@@ -106,57 +111,69 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
       {/* Navigation */}
       <nav className='flex-1 ml-8'>
         <ul className='flex flex-row items-center gap-6'>
-          <li>
-            <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
-              Analytics
-            </a>
-          </li>
-          <li>
-            <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
-              Reports
-            </a>
-          </li>
+          {windowWidth > BREAKPOINTS.home && (
+            <li>
+              <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
+                Home
+              </a>
+            </li>
+          )}
+          
+          {windowWidth > BREAKPOINTS.analytics && (
+            <li>
+              <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
+                Analytics
+              </a>
+            </li>
+          )}
+          
+          {windowWidth > BREAKPOINTS.reports && (
+            <li>
+              <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
+                Reports
+              </a>
+            </li>
+          )}
 
           {/* Products Dropdown */}
-          <li className='relative' ref={productsRef}>
-            <button
-              onClick={() => toggleDropdown('products')}
-              className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150 cursor-pointer'
-            >
-              Products
-              <ChevronDownIcon className={`size-4 transition-transform duration-200 ${dropdownStates.products ? 'rotate-180' : ''}`} />
-            </button>
-            {dropdownStates.products && (
-              <div className='absolute top-full -left-2 mt-7 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2'>
-                <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Product 1</a>
-                <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Product 2</a>
-                <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Product 3</a>
-              </div>
-            )}
-          </li>
+          {windowWidth > BREAKPOINTS.products && (
+            <li className='relative' ref={productsRef}>
+              <button
+                onClick={() => toggleDropdown('products')}
+                className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150 cursor-pointer'
+              >
+                Products
+                <ChevronDownIcon className={`size-4 transition-transform duration-200 ${dropdownStates.products ? 'rotate-180' : ''}`} />
+              </button>
+              {dropdownStates.products && (
+                <div className='absolute top-full -left-2 mt-7 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2'>
+                  <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Product 1</a>
+                  <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Product 2</a>
+                  <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Product 3</a>
+                </div>
+              )}
+            </li>
+          )}
 
           {/* Resources Dropdown */}
-          <li className='relative' ref={resourcesRef}>
-            <button
-              onClick={() => toggleDropdown('resources')}
-              className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150 cursor-pointer'
-            >
-              Resources
-              <ChevronDownIcon className={`size-4 transition-transform duration-200 ${dropdownStates.resources ? 'rotate-180' : ''}`} />
-            </button>
-            {dropdownStates.resources && (
-              <div className='absolute top-full -left-2 mt-7 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2'>
-                <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Documentation</a>
-                <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Support</a>
-                <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Community</a>
-              </div>
-            )}
-          </li>
+          {windowWidth > BREAKPOINTS.resources && (
+            <li className='relative' ref={resourcesRef}>
+              <button
+                onClick={() => toggleDropdown('resources')}
+                className='flex items-center gap-1 text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150 cursor-pointer'
+              >
+                Resources
+                <ChevronDownIcon className={`size-4 transition-transform duration-200 ${dropdownStates.resources ? 'rotate-180' : ''}`} />
+              </button>
+              {dropdownStates.resources && (
+                <div className='absolute top-full -left-2 mt-7 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-2'>
+                  <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Documentation</a>
+                  <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Support</a>
+                  <a href="#" className='block px-4 py-2 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-50'>Community</a>
+                </div>
+              )}
+            </li>
+          )}
         </ul>
       </nav>
 
