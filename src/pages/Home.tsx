@@ -354,7 +354,7 @@ const Home = () => {
   ];
 
   return (
-    <div className='p-6'>
+    <div className='p-6 h-screen overflow-y-auto'>
       <div className='grid grid-cols-12 gap-4'>
         {/* Left Column */}
         <div className='col-span-12 md:col-span-8 space-y-4'>

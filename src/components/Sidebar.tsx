@@ -172,12 +172,12 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
     <aside 
       className={`
         mb-6 bg-white border border-slate-200 rounded-xl
-        transition-all duration-300 ease-in-out
+        transition-all duration-300 ease-in-out flex flex-col
         ${sidebarToggle ? 'w-64 opacity-100' : 'w-0 opacity-0 hidden'}
       `}
     >
       {/* Menu */}
-      <nav className='flex-1 px-4 py-4 overflow-y-auto'>
+      <nav className='flex-1 px-4 py-4 overflow-y-auto h-full'>
         {/* Header Items */}
         <ul className='flex flex-col gap-2 mb-4'>
           {headerItems.map((item) => (
