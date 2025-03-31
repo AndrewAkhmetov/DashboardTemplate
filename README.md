@@ -30,6 +30,21 @@ npm install daisyui@latest
 ```
 - Add ```@plugin "daisyui";``` to ```src.index.css```
 
+# Install ApexCharts
+```
+npm install --save react-apexcharts apexcharts
+```
+
+# Install React D3 Tree
+```
+npm i --save react-d3-tree
+```
+
+# Install mui/material
+```
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material
+```
+
 ## Remove unecessary files
 - Delete everything in ```src.App.tsx```
 - Delete ```src.App.css```

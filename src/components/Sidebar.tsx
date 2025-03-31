@@ -14,6 +14,7 @@ import {
   DocumentChartBarIcon,
   CubeIcon
 } from '@heroicons/react/24/outline';
+import { Link } from 'react-router-dom';
 
 type DropdownKey = 'projects' | 'budget' | 'financing' | 'utilization' | 'reports' | 'estimates' | 'contracts' | 'references';
 
@@ -30,6 +31,29 @@ interface DropdownStates {
 
 interface SidebarProps {
   sidebarToggle: boolean;
+}
+
+interface MenuItem {
+  label: string;
+  path: string;
+}
+
+interface MenuSection {
+  key: DropdownKey;
+  label: string;
+  icon: React.ForwardRefExoticComponent<Omit<React.SVGProps<SVGSVGElement>, "ref"> & {
+    title?: string | undefined;
+    titleId?: string | undefined;
+  } & React.RefAttributes<SVGSVGElement>>;
+  items: MenuItem[];
+}
+
+interface HeaderItem {
+  key: string;
+  label: string;
+  icon: React.ForwardRefExoticComponent<any>;
+  breakpoint: number;
+  items?: (MenuItem | string)[];
 }
 
 const BREAKPOINTS = {
@@ -82,58 +106,98 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
     });
   };
 
-  const menuItems = [
+  const menuItems: MenuSection[] = [
     {
       key: 'projects' as DropdownKey,
       label: 'Projects',
       icon: ClipboardDocumentListIcon,
-      items: ['Active Projects', 'Completed Projects', 'Project Timeline', 'Project Analytics']
+      items: [
+        { label: 'Active Projects', path: '/project-tree' },
+        { label: 'Completed Projects', path: '#' },
+        { label: 'Project Timeline', path: '#' },
+        { label: 'Project Analytics', path: '#' }
+      ]
     },
     {
       key: 'budget' as DropdownKey,
       label: 'Budget',
       icon: BanknotesIcon,
-      items: ['Overview', 'Allocations', 'Expenses', 'Forecasting']
+      items: [
+        { label: 'Overview', path: '#' },
+        { label: 'Allocations', path: '#' },
+        { label: 'Expenses', path: '#' },
+        { label: 'Forecasting', path: '#' }
+      ]
     },
     {
       key: 'financing' as DropdownKey,
       label: 'Financing',
       icon: CurrencyDollarIcon,
-      items: ['Revenue', 'Investments', 'Cash Flow', 'Financial Reports']
+      items: [
+        { label: 'Revenue', path: '#' },
+        { label: 'Investments', path: '#' },
+        { label: 'Cash Flow', path: '#' },
+        { label: 'Financial Reports', path: '#' }
+      ]
     },
     {
       key: 'utilization' as DropdownKey,
       label: 'Utilization',
       icon: UserGroupIcon,
-      items: ['Resource Planning', 'Team Utilization', 'Capacity Planning', 'Efficiency Metrics']
+      items: [
+        { label: 'Resource Planning', path: '#' },
+        { label: 'Team Utilization', path: '#' },
+        { label: 'Capacity Planning', path: '#' },
+        { label: 'Efficiency Metrics', path: '#' }
+      ]
     },
     {
       key: 'reports' as DropdownKey,
       label: 'Reports',
       icon: ChartBarIcon,
-      items: ['Performance Reports', 'Financial Reports', 'Resource Reports', 'Custom Reports']
+      items: [
+        { label: 'Performance Reports', path: '#' },
+        { label: 'Financial Reports', path: '#' },
+        { label: 'Resource Reports', path: '#' },
+        { label: 'Custom Reports', path: '#' }
+      ]
     },
     {
       key: 'estimates' as DropdownKey,
       label: 'Estimates',
       icon: CalculatorIcon,
-      items: ['Create Estimate', 'Pending Estimates', 'Approved Estimates', 'Templates']
+      items: [
+        { label: 'Create Estimate', path: '#' },
+        { label: 'Pending Estimates', path: '#' },
+        { label: 'Approved Estimates', path: '#' },
+        { label: 'Templates', path: '#' }
+      ]
     },
     {
       key: 'contracts' as DropdownKey,
       label: 'Contracts',
       icon: DocumentTextIcon,
-      items: ['Active Contracts', 'Contract Templates', 'Negotiations', 'Archive']
+      items: [
+        { label: 'Active Contracts', path: '#' },
+        { label: 'Contract Templates', path: '#' },
+        { label: 'Negotiations', path: '#' },
+        { label: 'Archive', path: '#' }
+      ]
     },
     {
       key: 'references' as DropdownKey,
       label: 'References',
       icon: BookmarkIcon,
-      items: ['Client References', 'Case Studies', 'Testimonials', 'Portfolio']
+      items: [
+        { label: 'Client References', path: '#' },
+        { label: 'Case Studies', path: '#' },
+        { label: 'Testimonials', path: '#' },
+        { label: 'Portfolio', path: '#' }
+      ]
     }
   ];
 
-  const headerItems = [
+  const headerItems: HeaderItem[] = [
     {
       key: 'home',
       label: 'Home',
@@ -221,7 +285,18 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
                               }
                             `}
                           >
-                            {subItem}
+                            <Link
+                              to={typeof subItem === 'string' ? '#' : subItem.path}
+                              className={`
+                                px-3 py-1 text-sm rounded cursor-pointer transition-colors duration-150 block
+                                ${activeDropdown === item.key 
+                                  ? 'text-slate-900 hover:bg-slate-100' 
+                                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                                }
+                              `}
+                            >
+                              {typeof subItem === 'string' ? subItem : subItem.label}
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -229,8 +304,8 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
                   </>
                 ) : (
                   // Regular items (Home, Analytics, Reports)
-                  <a
-                    href="#"
+                  <Link
+                    to={item.key === 'home' ? '/' : `/${item.key}`}
                     className={`
                       flex items-center gap-2 px-3 py-2 
                       rounded-lg transition-colors duration-150
@@ -239,7 +314,7 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
                   >
                     <item.icon className="size-5" />
                     <span className='font-medium'>{item.label}</span>
-                  </a>
+                  </Link>
                 )}
               </li>
             )
@@ -288,7 +363,12 @@ const Sidebar = ({ sidebarToggle }: SidebarProps) => {
                         }
                       `}
                     >
-                      {item}
+                      <Link
+                        to={item.path}
+                        className="block w-full h-full"
+                      >
+                        {item.label}
+                      </Link>
                     </li>
                   ))}
                 </ul>

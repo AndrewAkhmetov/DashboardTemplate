@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Bars3CenterLeftIcon, 
   XMarkIcon,
@@ -113,9 +114,9 @@ const Header = ({ sidebarToggle, setSidebarToggle }: HeaderProps) => {
         <ul className='flex flex-row items-center gap-6'>
           {windowWidth > BREAKPOINTS.home && (
             <li>
-              <a href="#" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
+              <Link to="/" className='text-slate-600 hover:text-slate-900 font-medium transition-colors duration-150'>
                 Home
-              </a>
+              </Link>
             </li>
           )}
           

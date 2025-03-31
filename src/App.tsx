@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Home from './pages/Home';
+import ProjectTree from './pages/ProjectTree';
 
 function App() {
   const [sidebarToggle, setSidebarToggle] = useState(true);
@@ -22,6 +23,7 @@ function App() {
           <main className={`flex-1 transition-all duration-300`}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/project-tree" element={<ProjectTree />} />
             </Routes>
           </main>
         </div>
